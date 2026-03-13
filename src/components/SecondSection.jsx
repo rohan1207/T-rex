@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { Phone, Trees, Mountain, Leaf, Waves } from "lucide-react";
+import { ShoppingCart, Thermometer, ShieldCheck, Droplets, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SAGE      = "#7A9A7C";
@@ -15,28 +15,28 @@ const inter = {
 const SecondSection = () => {
   const features = [
     {
-      Icon: Trees,
-      title: "Tailored Craftsmanship",
+      Icon: Thermometer,
+      title: "Temperature That Lasts",
       subtitle:
-        "Made-to-measure pieces that respond to your rooms, lifestyle, and rituals.",
+        "Double-wall vacuum insulation keeps your cold drinks icy for 24 hrs and hot drinks steaming for 12 hrs — every single time.",
     },
     {
-      Icon: Mountain,
-      title: "Elevated Silhouettes",
+      Icon: Zap,
+      title: "One-Click Flip Lid",
       subtitle:
-        "Quietly bold forms that anchor a space without ever feeling loud.",
+        "Precision-engineered flip-top lid with dual-latch lock — snaps open with one thumb, seals shut with a satisfying click.",
     },
     {
-      Icon: Leaf,
-      title: "Honest Materials",
+      Icon: ShieldCheck,
+      title: "Built to Outlast",
       subtitle:
-        "Solid woods, rich fabrics, and finishes chosen to age beautifully over time.",
+        "18/8 food-grade stainless steel interior. BPA-free, rust-resistant, and finished to handle years of real, daily use.",
     },
     {
-      Icon: Waves,
-      title: "Calm Living",
+      Icon: Droplets,
+      title: "Zero Leaks. Zero Mess.",
       subtitle:
-        "Collections curated to create soft, effortless flow from room to room.",
+        "Double-secured closure ensures your bag, desk, and car stay dry — no matter how hard the day gets.",
     },
   ];
 
@@ -110,35 +110,36 @@ const SecondSection = () => {
               className="text-[10px] tracking-[0.38em] uppercase mb-4"
               style={{ color: "rgba(122,154,124,0.9)" }}
             >
-              T‑Rex Collection · 2025
+              Why T‑Rex · The Difference
             </p>
 
             <h2
               className="text-4xl sm:text-5xl lg:text-6xl font-light text-neutral-900 leading-tight mb-4 sm:mb-6"
               style={{ letterSpacing: "0.02em" }}
             >
-              ELEVATED
+              ENGINEERED
               <br />
-              BY CRAFT
+              FOR REAL LIFE
             </h2>
 
             <p className="text-neutral-500 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8 font-light">
-              Mystique crafts bespoke, statement furniture where proportion,
-              material, and comfort meet. From singular hero pieces to complete
-              rooms, every design is drawn, prototyped, and finished to suit the
-              way you really live.
+              Every T‑Rex Tumbler is built around one idea — your drink should
+              be exactly the way you left it, hours later. Vacuum-sealed walls,
+              a one-click lid, and stainless steel that doesn't rust, taint, or
+              quit. Relentless performance in a design that means business.
             </p>
 
             {/* CTA row */}
             <div className="flex flex-row flex-wrap items-center gap-3 sm:gap-6 lg:gap-10">
               <Link
-                to="/booking"
-                className="text-white px-5 sm:px-8 py-3 sm:py-4 text-[11px] sm:text-xs font-light tracking-[0.2em] uppercase rounded-full transition-all duration-300 whitespace-nowrap"
+                to="/shop"
+                className="text-white px-5 sm:px-8 py-3 sm:py-4 text-[11px] sm:text-xs font-light tracking-[0.2em] uppercase rounded-full transition-all duration-300 whitespace-nowrap flex items-center gap-2"
                 style={{ backgroundColor: SAGE }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#5f7c62")}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = SAGE)}
               >
-                Schedule Consultation
+                <ShoppingCart size={14} />
+                Shop the Collection
               </Link>
 
               <div className="flex items-center gap-3 sm:gap-4 min-w-0">
@@ -148,11 +149,11 @@ const SecondSection = () => {
                   whileHover={{ scale: 1.08, rotate: 12 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
-                  <Phone size={18} style={{ color: SAGE }} />
+                  <Thermometer size={18} style={{ color: SAGE }} />
                 </motion.div>
                 <span className="text-neutral-700 font-light text-xs sm:text-base leading-tight">
-                  Discuss Your{" "}
-                  <span style={{ color: SAGE }}>Furniture Vision</span>
+                  Cold 24 hrs ·{" "}
+                  <span style={{ color: SAGE }}>Hot 12 hrs. Guaranteed.</span>
                 </span>
               </div>
             </div>
