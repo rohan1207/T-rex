@@ -239,6 +239,13 @@ const Hero = () => {
   // True aspect ratio (w/h) of tumbler.png — loaded once on mount
   const tumblerAspectRef = useRef(null);
 
+  // Ref to the stage-0 tumbler img element rendered inside the hero section
+  const heroTumblerRef = useRef(null);
+
+  // Viewport center of that tumbler, measured just before the fly starts,
+  // so the fixed overlay begins at the exact same pixel position
+  const flyStartRef = useRef(null);
+
   // Scroll lock — start unlocked if the hero was already completed this session
   const [scrollLocked, setScrollLocked] = useState(!alreadyDone);
 
@@ -481,15 +488,23 @@ const Hero = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, [scrollLocked, startReverse]);
 
-  // ── Preload tumbler.png to get the real aspect ratio, then compute flyTarget ──
-  // This ensures the bottle is always exactly the same size as the settled card image.
+  // ── Preload all hero images + measure tumbler aspect for flyTarget ───────────
+  // sipper.png / drink.png / inner.png are kicked off in parallel so they're
+  // in the browser cache before the user even starts scrolling.
   useEffect(() => {
     let cancelled = false;
+
+    // Kick off parallel fetches for the non-tumbler images (fire-and-forget)
+    ["/sipper.png", "/drink.png", "/inner.png"].forEach((src) => {
+      const i = new window.Image();
+      i.src = src;
+    });
+
+    // Tumbler needs onload to read its natural aspect ratio
     const img = new window.Image();
     img.onload = () => {
       if (cancelled) return;
       tumblerAspectRef.current = img.naturalWidth / img.naturalHeight;
-      // Now that we have the real aspect, compute the target layout
       requestAnimationFrame(() => {
         if (cancelled) return;
         const t = computeFlyTarget();
@@ -732,31 +747,34 @@ const Hero = () => {
               animate={{ y: [0, -12, 0] }}
               transition={floatTransition}
             >
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={`hero-img-${storyStage}`}
-                  src={IMAGES[storyStage]}
-                  alt="Premium Tumbler"
-                  initial={{ opacity: 0 }}
-                  animate={{ y: [0, -5, 0], opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{
-                    opacity: { duration: 0.25 },
-                    y: { ...floatTransition, duration: 4.2, delay: 0.3 },
-                  }}
-                  className={
-                    storyStage === 0
-                      ? "relative z-10 object-contain drop-shadow-[0_24px_48px_rgba(0,0,0,0.14)]"
-                      : "relative z-10 w-[270px] lg:w-[330px] xl:w-[380px] object-contain drop-shadow-[0_24px_48px_rgba(0,0,0,0.14)]"
-                  }
-                  style={{
-                    // tumbler.png is locked to the exact card-image size so it
-                    // appears identical in the hero, as the overlay, and in the card.
-                    width: storyStage === 0 ? (flyTarget?.imgW ?? 270) : undefined,
-                    marginBottom: "-60px",
-                  }}
-                />
-              </AnimatePresence>
+              {/*
+               * All 4 images live in the DOM at all times — the browser fetches
+               * them all on first render so scrolling never hits a loading lag.
+               * Crossfade via animate={{ opacity }} with no AnimatePresence so
+               * the active image fades IN while the previous fades OUT simultaneously,
+               * eliminating the white-flash gap that mode="wait" caused.
+               */}
+              <div
+                className="relative w-[340px] lg:w-[420px] xl:w-[480px]"
+                style={{ marginBottom: "-60px", height: "560px" }}
+              >
+                {IMAGES.map((src, i) => (
+                  <motion.img
+                    key={src}
+                    ref={i === 0 ? heroTumblerRef : null}
+                    src={src}
+                    alt="Premium Tumbler"
+                    initial={{ opacity: i === storyStage ? 1 : 0 }}
+                    animate={{ opacity: storyStage === i ? 1 : 0 }}
+                    transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-auto object-contain drop-shadow-[0_24px_48px_rgba(0,0,0,0.14)]"
+                    style={{
+                      maxWidth: i === 0 ? (flyTarget?.imgW ?? 270) : "100%",
+                      pointerEvents: storyStage === i ? "auto" : "none",
+                    }}
+                  />
+                ))}
+              </div>
               <img
                 src="/stone.png"
                 alt=""
